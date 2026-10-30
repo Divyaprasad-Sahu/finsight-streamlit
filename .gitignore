@@ -1,0 +1,9 @@
+.tools/
+**/.terraform/
+**/*.tfstate*
+**/*.tfplan
+**/*.tfvars
+**/.env
+**/__pycache__/
+**/.market-cache/
+**/local-imports.tf

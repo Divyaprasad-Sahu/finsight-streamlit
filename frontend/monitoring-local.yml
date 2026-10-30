@@ -1,0 +1,26 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: finsight-prometheus
+    ports: ["127.0.0.1:9090:9090"]
+    volumes:
+      - ./monitoring/prometheus-local.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-local:/prometheus
+    restart: unless-stopped
+  grafana:
+    image: grafana/grafana:latest
+    container_name: finsight-grafana
+    ports: ["127.0.0.1:3000:3000"]
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Set local password}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/live-dashboard.json:/var/lib/grafana/dashboards/finsight-live.json:ro
+      - grafana-local:/var/lib/grafana
+    restart: unless-stopped
+volumes:
+  prometheus-local:
+  grafana-local:
