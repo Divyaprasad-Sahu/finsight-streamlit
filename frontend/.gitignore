@@ -1,0 +1,6 @@
+.env
+__pycache__/
+.market-cache/
+terraform/.terraform/
+terraform/*.tfstate*
+terraform/*.tfplan

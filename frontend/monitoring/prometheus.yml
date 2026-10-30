@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: finsight-live
+    static_configs:
+      - targets: ["streamlit:9109"]
+  - job_name: finsight-model
+    static_configs:
+      - targets: ["exporter:9108"]

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finsight-streamlit
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: finsight-streamlit}
+  template:
+    metadata:
+      labels: {app: finsight-streamlit}
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: streamlit
+          image: finsight-streamlit:local
+          imagePullPolicy: IfNotPresent
+          ports: [{containerPort: 8501}]
+          resources:
+            requests: {cpu: 250m, memory: 256Mi}
+            limits: {cpu: "1", memory: 1Gi}
+          readinessProbe:
+            httpGet: {path: /_stcore/health, port: 8501}
+            initialDelaySeconds: 10
+          livenessProbe:
+            httpGet: {path: /_stcore/health, port: 8501}
+            initialDelaySeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: finsight-streamlit
+spec:
+  sessionAffinity: ClientIP
+  selector: {app: finsight-streamlit}
+  ports: [{port: 8501, targetPort: 8501}]
